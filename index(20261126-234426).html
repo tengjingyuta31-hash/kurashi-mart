@@ -1,0 +1,22 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>くらしの発見マート</title><style>*{box-sizing:border-box}body{margin:0;font:16px/1.8 system-ui,sans-serif;color:#243b36;background:#f5f8f5}header{background:#17594b;color:white;padding:30px 20px}header h1{margin:0;font-size:30px}main{max-width:1000px;margin:auto;padding:20px}nav{display:flex;gap:8px;flex-wrap:wrap}button{background:white;color:#17594b;border:1px solid #b6cec6;border-radius:20px;padding:8px 15px;font:inherit;cursor:pointer}button.active{background:#17594b;color:white}input{width:100%;padding:13px;border:1px solid #b6cec6;border-radius:12px;font:inherit;margin:15px 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}article{background:white;border:1px solid #dce6df;border-radius:15px;padding:20px}h2{font-size:20px}small{color:#53786c}summary{cursor:pointer;color:#17594b;font-weight:bold}footer{padding:25px;background:#e4eee8}a{color:#17594b}</style><header><small style="color:#d5f0e5">買う前に、知っておきたい。</small><h1>くらしの発見マート</h1>毎日の暮らしに役立つ、商品の選び方ガイド。</header><main><p>価格だけでなく、使いやすさや注意点も比較して、自分に合った商品を探しましょう。</p><nav id="nav"></nav><input id="q" placeholder="記事を検索" aria-label="記事を検索"><p id="count"></p><div class="grid" id="cards"></div></main><footer><strong>運営について</strong><p>商品選びの一般的な情報を掲載する試作サイトです。実物の使用レビューではありません。現時点では広告・アフィリエイトリンクは掲載していません。今後掲載する場合は広告であることを明示します。</p></footer><script>
+const data=[
+['カー用品','ドライブレコーダー','前後撮影・夜間画質・駐車監視を比較。','駐車監視は補機バッテリーへの負担と電圧保護機能を確認。取付位置は視界や法令に配慮しましょう。'],
+['カー用品','スマホホルダー','固定方法と対応サイズを確認。','エアコン吹出口の形状やケースの厚みを確認。視界やエアバッグを妨げない場所に設置しましょう。'],
+['カー用品','タイヤ空気圧計','測定範囲と表示の読みやすさを比較。','冷間時に測り、車両指定空気圧を基準にします。測定器の精度も確認しましょう。'],
+['カー用品','洗車用クロス','吸水性とサイズで選ぶ。','ボディ用とホイール用を分け、砂が付いたクロスはそのまま使わないようにしましょう。'],
+['カー用品','車載充電器','USB PD対応と出力を比較。','複数ポート使用時の合計出力や車両の電源ソケット定格を確認しましょう。'],
+['美容','電気シェーバー','刃の方式と手入れのしやすさを比較。','替刃の価格、防水性能、肌への刺激を考慮しましょう。'],
+['美容','洗顔料','洗浄力と肌への刺激を比較。','乾燥が気になる場合は洗いすぎを避け、刺激があれば使用を中止しましょう。'],
+['美容','眉毛トリマー','刃の幅と長さ調整機能を確認。','長めのアタッチメントから試し、少しずつ整えると失敗を減らせます。'],
+['家電・スマホ','モバイルバッテリー','容量・重量・出力を比較。','国内向け製品はPSE表示を確認。膨張や異常発熱があれば使用を中止しましょう。'],
+['家電・スマホ','充電ケーブル','端子・対応電力・長さを確認。','急速充電には機器、充電器、ケーブルすべての対応が必要です。'],
+['家電・スマホ','ワイヤレスイヤホン','装着感と電池持ちを比較。','通話用マイクや防水性能も用途に合わせて確認しましょう。'],
+['ペット','犬用ハーネス','胴回りと抜けにくさを確認。','犬の体格に合うサイズを選び、擦れや締め付けがないか確認しましょう。'],
+['ペット','ペット用ブラシ','毛の長さと毛質で選ぶ。','皮膚を強くこすらず、嫌がる場合は無理に続けないようにしましょう。'],
+['ペット','ペット用給水器','容量と洗いやすさを比較。','フィルター交換費用と分解清掃のしやすさを確認しましょう。'],
+['生活用品','収納ボックス','寸法と積み重ね性能を確認。','収納場所を先に測り、耐荷重や取り出しやすさを確認しましょう。'],
+['生活用品','電気ケトル','容量と安全機能を比較。','空だき防止や転倒時の漏れ対策、消費電力を確認しましょう。'],
+['生活用品','掃除用ワイパー','床材と交換シートの相性を確認。','本体価格だけでなく消耗品の費用も比較しましょう。'],
+['趣味','ゲーム用コントローラー','対応機種と接続方式を確認。','ゲームごとの対応状況やボタン配置を確認しましょう。'],
+['趣味','漫画収納ラック','棚の奥行きと耐荷重を比較。','本の重量を考慮し、転倒防止対策も確認しましょう。'],
+['趣味','読書用ライト','明るさ調整と設置方式を比較。','手元を照らせる角度や充電方式を確認しましょう。']];let cat='すべて';const nav=document.getElementById('nav'),q=document.getElementById('q');function render(){nav.innerHTML='';for(const c of ['すべて',...new Set(data.map(x=>x[0]))]){let b=document.createElement('button');b.textContent=c;b.className=c===cat?'active':'';b.onclick=()=>{cat=c;render()};nav.append(b)}let rows=data.filter(x=>(cat==='すべて'||x[0]===cat)&&x.join(' ').includes(q.value.trim()));document.getElementById('count').textContent=rows.length+'件の選び方ガイド';document.getElementById('cards').innerHTML=rows.map(x=>`<article><small>${x[0]}</small><h2>${x[1]}の選び方</h2><p>${x[2]}</p><details><summary>購入前のチェックポイント</summary><p>${x[3]}</p></details></article>`).join('')}q.oninput=render;render();</script></html>
